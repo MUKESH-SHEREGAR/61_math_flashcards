@@ -38,10 +38,12 @@ class GameEngine:
         self.input_box.clear()
 
     def compute_expected_answer(self):
-        
-        # BUG SYMPTOM: 
-        # Operands are combined as strings instead of evaluated with mathematical operations.
-        return int(f"{self.num_a}{self.num_b}")
+    if self.operator == "+":
+        return self.num_a + self.num_b
+    elif self.operator == "-":
+        return self.num_a - self.num_b
+    elif self.operator == "*":
+        return self.num_a * self.num_b
 
     def submit_answer(self):
         val_str = self.input_box.text.strip()
