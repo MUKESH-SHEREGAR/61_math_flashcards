@@ -16,6 +16,8 @@ class GameEngine:
         self.num_a = 0
         self.num_b = 0
         self.operator = "+"
+        self.timer_duration = 10.0
+        self.timer_start = pygame.time.get_ticks()
 
         box_w, box_h = 130, 44
         self.input_box = TextBox(width // 2 - 110, 230, box_w, box_h)
@@ -29,13 +31,14 @@ class GameEngine:
         self.generate_new_card()
 
     def generate_new_card(self):
-        self.num_a = random.randint(3, 15)
-        self.num_b = random.randint(2, 12)
-        self.operator = random.choice(["+", "-", "*"])
-        if self.operator == "-" and self.num_a < self.num_b:
-            self.num_a, self.num_b = self.num_b, self.num_a
+    self.num_a = random.randint(3, 15)
+    self.num_b = random.randint(2, 12)
+    self.operator = random.choice(["+", "-", "*"])
+    if self.operator == "-" and self.num_a < self.num_b:
+        self.num_a, self.num_b = self.num_b, self.num_a
 
-        self.input_box.clear()
+    self.timer_start = pygame.time.get_ticks()
+    self.input_box.clear()
 
     def compute_expected_answer(self):
     if self.operator == "+":
@@ -76,7 +79,13 @@ class GameEngine:
                 self.submit_answer()
 
     def update(self):
-        pass
+    elapsed = (pygame.time.get_ticks() - self.timer_start) / 1000
+
+    if elapsed >= self.timer_duration:
+        self.total_attempts += 1
+        self.feedback_msg = "TIME'S UP!"
+        self.feedback_color = (240, 75, 75)
+        self.generate_new_card()
 
     def render(self, screen):
         screen.fill((25, 29, 37))
@@ -90,6 +99,17 @@ class GameEngine:
         card_rect = pygame.Rect(self.width // 2 - 130, 95, 260, 110)
         pygame.draw.rect(screen, (240, 242, 245), card_rect, border_radius=12)
         pygame.draw.rect(screen, (85, 120, 175), card_rect, width=3, border_radius=12)
+
+        timer_bg = pygame.Rect(self.width // 2 - 130, 212, 260, 12)
+        pygame.draw.rect(screen, (55, 60, 70), timer_bg, border_radius=6)
+
+        elapsed = (pygame.time.get_ticks() - self.timer_start) / 1000
+        remaining_ratio = max(0, 1 - elapsed / self.timer_duration)
+
+        timer_width = int(timer_bg.width * remaining_ratio)
+        timer_rect = pygame.Rect(timer_bg.x, timer_bg.y, timer_width, timer_bg.height)
+
+        pygame.draw.rect(screen, (80, 200, 110), timer_rect, border_radius=6)
 
         card_str = f"{self.num_a}  {self.operator}  {self.num_b}"
         card_surf = self.font_card.render(card_str, True, (25, 30, 42))
