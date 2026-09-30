@@ -34,9 +34,17 @@ class GameEngine:
     def generate_new_card(self):
         self.num_a = random.randint(3, 15)
         self.num_b = random.randint(2, 12)
-        self.operator = random.choice(["+", "-", "*"])
+        self.operator = random.choice(["+", "-", "*", "/"])
 
-        if self.operator == "-" and self.num_a < self.num_b:
+        if self.operator == "/":
+            self.num_b = random.randint(2, 12)
+            valid_values = [
+                n for n in range(3, 16)
+                if n % self.num_b == 0
+            ]
+            self.num_a = random.choice(valid_values)
+
+        elif self.operator == "-" and self.num_a < self.num_b:
             self.num_a, self.num_b = self.num_b, self.num_a
 
         self.timer_start = pygame.time.get_ticks()
@@ -49,6 +57,8 @@ class GameEngine:
             return self.num_a - self.num_b
         elif self.operator == "*":
             return self.num_a * self.num_b
+        elif self.operator == "/":
+            return self.num_a // self.num_b
 
     def submit_answer(self):
         val_str = self.input_box.text.strip()
