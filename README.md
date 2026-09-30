@@ -80,6 +80,11 @@ math_flashcards/
 
 ## Submission Checklist
 
+## Chat/LLM Used
+ChatGPT conversation containing the complete prompt and development history:
+
+https://chatgpt.com/share/6abd5023-a51c-83ee-946d-5d7a637b0697
+
 Submission is only the following three things:
 
 - [] A 10-second video of gameplay **before** your changes, showing the bug/broken behavior
